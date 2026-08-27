@@ -7,7 +7,7 @@
 
 {
   imports = [
-    ./niri.nix
+    ./niri
     ./kahonkey
   ];
 

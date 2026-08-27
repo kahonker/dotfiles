@@ -1,7 +1,5 @@
-{
-  programs.niri = {
-    enable = true;
+{ pkgs, ... }:
 
-    import = [ ];
-  };
+{
+  imports = [ ];
 }
