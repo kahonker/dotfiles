@@ -1,7 +1,10 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./input.nix ];
+  imports = [
+    ./input.nix
+    ./layout.nix
+  ];
 
   programs.niri = {
     enable = true;
