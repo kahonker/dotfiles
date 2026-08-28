@@ -5,6 +5,7 @@
     ./input.nix
     ./layout.nix
     ./binds.nix
+    ./window-rules.nix
   ];
 
   programs.niri = {
