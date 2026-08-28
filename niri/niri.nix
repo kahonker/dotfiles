@@ -7,7 +7,7 @@
 }:
 {
   programs.niri = {
-    package = pkgs.niri;
+    # package = pkgs.niri;
     #    settings = {
     #      keyboard = {
     #        numlock = true;
