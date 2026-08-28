@@ -27,6 +27,10 @@
           position = "bottom";
           gaps-between-tabs = 15;
         };
+
+        default-column-width = {
+          proportion = 0.5;
+        };
       };
     };
   };
