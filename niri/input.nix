@@ -27,7 +27,7 @@
           mode = "center-xy";
         };
 
-        # focus-follows-mouse.enable = true;
+        focus-follows-mouse.enable = true;
       };
     };
   };

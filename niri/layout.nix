@@ -6,6 +6,8 @@
 
         center-focused-column = "never";
 
+        focus-ring.enable = false;
+
         border = {
           enable = true;
           width = 2;
