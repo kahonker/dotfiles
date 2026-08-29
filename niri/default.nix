@@ -31,7 +31,7 @@
       workspaces = {
         "terminals" = { };
         "browser" = { };
-        "terminals" = { };
+        "games" = { };
         "misc" = { };
       };
     };
