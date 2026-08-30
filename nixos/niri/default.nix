@@ -28,8 +28,9 @@
 
       clipboard.disable-primary = true;
 
+      # stupid idiot nix script orders options by alphabetical order
       workspaces = {
-        "terminals" = { };
+        "aerminal" = { };
         "browser" = { };
         "games" = { };
         "misc" = { };
