@@ -18,6 +18,7 @@
     brightnessctl
     flavours
     quickshell
+    pavucontrol
   ];
 
 }
