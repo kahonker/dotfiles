@@ -19,6 +19,7 @@
     ./services.nix
     ./environment.nix
     #    ./nvidia_conf.nix
+    ./nvidia.nix
   ];
 
   nix.settings.experimental-features = [

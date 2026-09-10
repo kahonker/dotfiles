@@ -19,6 +19,7 @@
     flavours
     quickshell
     pavucontrol
+    lshw
   ];
 
 }
