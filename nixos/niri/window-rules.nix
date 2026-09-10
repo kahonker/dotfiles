@@ -52,7 +52,7 @@
           matches = [
             { app-id = "Alacritty|kitty"; }
           ];
-          open-on-workspace = "terminals";
+          open-on-workspace = "aerminal";
         }
 
         {
