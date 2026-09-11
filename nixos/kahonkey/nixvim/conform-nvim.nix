@@ -12,6 +12,9 @@
         kdl = [
           "kdlfmt"
         ];
+        qml = [
+          "qmlformat"
+        ];
       };
       format_on_save = # Lua
         ''
@@ -45,6 +48,9 @@
         };
         kdlfmt = {
           command = lib.getExe pkgs.kdlfmt;
+        };
+        qmlformat = {
+          command = "qmlformat";
         };
       };
     };

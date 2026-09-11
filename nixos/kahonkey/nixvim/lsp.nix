@@ -28,6 +28,19 @@
           ];
         };
       };
+
+      qmlls = {
+        enable = true;
+
+        config = {
+          cmd = [ "qmlls" ];
+          filetypes = [
+            "qml"
+            "qmljs"
+          ];
+          root_markers = [ "shell.qml" ];
+        };
+      };
     };
   };
 }

@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   imports = [ inputs.nixvim.homeModules.nixvim ];
@@ -75,6 +75,10 @@
         key = "<S-j>";
         action = ":m '>+1<CR>gv=gv";
       }
+    ];
+
+    extraPackages = with pkgs; [
+      kdePackages.qtdeclarative
     ];
   };
 }
