@@ -20,6 +20,7 @@
       ./surround.nix
       ./toggleterm.nix
       ./nvim-tree.nix
+      ./colorizer.nix
     ];
 
     globals.mapleader = " ";
