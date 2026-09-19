@@ -41,6 +41,22 @@
           root_markers = [ "shell.qml" ];
         };
       };
+
+      kotlin-lsp = {
+        enable = true;
+        config = {
+          cmd = [ "kotlin" ];
+          filetypes = [
+            "kt"
+            "kts"
+          ];
+          root_markers = [
+            "gradle/"
+            "gradlew"
+            ".git"
+          ];
+        };
+      };
     };
   };
 }

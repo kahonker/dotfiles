@@ -15,6 +15,12 @@
         qml = [
           "qmlformat"
         ];
+        kt = [
+          "klint"
+        ];
+        kts = [
+          "klint"
+        ];
       };
       format_on_save = # Lua
         ''
@@ -51,6 +57,9 @@
         };
         qmlformat = {
           command = "qmlformat";
+        };
+        ktlint = {
+          command = "ktlint";
         };
       };
     };
