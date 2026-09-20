@@ -11,6 +11,7 @@
       event = "FileType";
       pattern = [
         "python"
+        "qml"
       ];
       command = "setlocal shiftwidth=4 tabstop=4 noexpandtab";
     }
