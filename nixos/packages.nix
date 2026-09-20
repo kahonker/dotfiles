@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, kotlin-lsp, ... }:
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -12,6 +12,7 @@
     unzip
     zip
     jdk25
+    jdk21
     prismlauncher
     temurin-bin-25
     awww
@@ -19,6 +20,9 @@
     flavours
     quickshell
     pavucontrol
+    gradle
+    kotlin
+    kotlin-lsp
   ];
 
 }

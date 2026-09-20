@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  kotlin-lsp,
+  ...
+}:
 
 {
   imports = [ inputs.nixvim.homeModules.nixvim ];
@@ -22,6 +27,8 @@
       ./nvim-tree.nix
       ./colorizer.nix
     ];
+
+    _module.args = { inherit kotlin-lsp; };
 
     globals.mapleader = " ";
     keymaps = [

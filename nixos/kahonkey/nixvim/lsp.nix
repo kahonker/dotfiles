@@ -1,4 +1,4 @@
-{
+{ kotlin-lsp, ... }: {
   lsp = {
     servers = {
       nixd = {
@@ -36,7 +36,6 @@
           cmd = [ "qmlls" ];
           filetypes = [
             "qml"
-            "qmljs"
           ];
           root_markers = [ "shell.qml" ];
         };
@@ -44,11 +43,16 @@
 
       kotlin-lsp = {
         enable = true;
+
+        package = kotlin-lsp;
+
         config = {
-          cmd = [ "kotlin" ];
+          cmd = [
+            "kotlin-lsp"
+            "--stdio"
+          ];
           filetypes = [
-            "kt"
-            "kts"
+            "kotlin"
           ];
           root_markers = [
             "gradle/"
