@@ -15,7 +15,7 @@ Scope {
 
             implicitHeight: 30
 
-            DesktopViewer {
+            WorkspaceViewer {
                 anchors {
                     left: parent.left
                     leftMargin: 10
