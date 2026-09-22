@@ -1,4 +1,9 @@
-{ pkgs, kotlin-lsp, ... }:
+{
+  pkgs,
+  kotlin-lsp,
+  inputs,
+  ...
+}:
 
 {
   nixpkgs.config.allowUnfree = true;
@@ -18,11 +23,12 @@
     awww
     brightnessctl
     flavours
-    quickshell
     pavucontrol
     gradle
     kotlin
     kotlin-lsp
+    inputs.qml-niri.packages.x86_64-linux.default
+    inputs.qml-niri.packages.x86_64-linux.quickshell
   ];
 
 }
