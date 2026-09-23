@@ -5,8 +5,8 @@
         # Universal rules
         {
           geometry-corner-radius = {
-            top-left = 5.0;
-            top-right = 5.0;
+            top-left = 7.5;
+            top-right = 7.5;
             bottom-left = 5.0;
             bottom-right = 5.0;
           };

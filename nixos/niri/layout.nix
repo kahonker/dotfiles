@@ -3,6 +3,7 @@
     settings = {
       layout = {
         gaps = 5;
+        struts.top = -5;
 
         center-focused-column = "never";
 
