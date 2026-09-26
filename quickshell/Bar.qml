@@ -59,6 +59,16 @@ Scope {
                     id: row
                     spacing: 10
 
+                    Volume {
+                        fontSizeMode: Text.VerticalFit
+                        font.family: "FiraCode Nerd Font Propo"
+                        minimumPixelSize: {
+                            print("󰕾󰕿󰖀󰸈" + Icons.nf_md_battery_0);
+                            return 10;
+                        }
+                        color: Colors.color5
+                    }
+
                     Battery {
                         fontSizeMode: Text.VerticalFit
                         font.family: "FiraCode Nerd Font Mono"
