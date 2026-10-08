@@ -66,6 +66,10 @@
   services.kmscon.enable = false;
   services.xserver.enable = true;
   services.xserver.displayManager.lightdm.enable = false;
+  services.udev.extraHwdb = ''
+    evdev:name:Dell WMI hotkeys:* 
+     KEYBOARD_KEY_100109=reserved
+  '';
   # services.displayManager.defaultSession = "niri-session";
 
   # Configure keymap in X11
