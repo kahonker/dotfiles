@@ -14,7 +14,7 @@
 
     settings = {
       spawn-at-startup = [
-        { argv = [ "glide" ]; }
+        { argv = [ "qutebrowser" ]; }
       ];
 
       hotkey-overlay.skip-at-startup = true;

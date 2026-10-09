@@ -57,7 +57,7 @@
 
         {
           matches = [
-            { app-id = "glide$"; }
+            { app-id = "qutebrowser$"; }
           ];
           open-on-workspace = "browser";
         }
@@ -65,10 +65,6 @@
         # Open floating
         {
           matches = [
-            {
-              app-id = "glide$";
-              title = "^Picture-in-Picture$";
-            }
             { title = " Prism Launcher "; }
           ];
           open-floating = true;

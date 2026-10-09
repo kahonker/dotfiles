@@ -10,6 +10,7 @@
     inputs.niri.homeModules.niri
     ./niri
     ./kahonkey
+    ./qutebrowser.nix
   ];
 
   # Home Manager needs a bit of information about you and the
