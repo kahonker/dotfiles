@@ -46,12 +46,14 @@ Item {
                     required property int index
                     required property bool isActive
                     required property bool isFocused
+                    required property string name
 
                     MouseArea {
                         id: mouseArea
                         anchors.fill: parent
                         enabled: !workspace.isActive
                         onClicked: {
+                            print(workspace.name);
                             Quickshell.execDetached(["niri", "msg", "action", "focus-workspace", index]);
                         }
                         hoverEnabled: true
