@@ -41,6 +41,19 @@
         };
       };
 
+      pyright = {
+        enable = true;
+
+        config = {
+          cmd = [ "pyright" ];
+          filetypes = [ "python" ];
+          root_markers = [
+            ".git"
+            "requirements.txt"
+          ];
+        };
+      };
+
       kotlin-lsp = {
         enable = true;
 
