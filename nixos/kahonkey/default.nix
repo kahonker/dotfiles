@@ -6,5 +6,7 @@
     ./git.nix
     ./ssh.nix
     ./gpg.nix
+    ./zsh.nix
+    ./starship.nix
   ];
 }

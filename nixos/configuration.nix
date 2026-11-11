@@ -49,6 +49,8 @@
   # Set your time zone.
   time.timeZone = "America/New_York";
 
+  programs.zsh.enable = true;
+
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -105,6 +107,7 @@
     packages = with pkgs; [
       tree
     ];
+    shell = pkgs.zsh;
   };
 
   # programs.niri = {
