@@ -30,6 +30,7 @@
     inputs.qml-niri.packages.x86_64-linux.default
     inputs.qml-niri.packages.x86_64-linux.quickshell
     (python3.withPackages (p: [ p.adblock ]))
+    jq
   ];
 
 }

@@ -19,6 +19,7 @@
         blocking.method = "both";
         fullscreen.window = true;
         prefers_reduced_motion = true;
+        pdfjs = true;
       };
 
       input = {
@@ -42,5 +43,12 @@
       window.hide_decoration = true;
     };
 
+    keyBindings = {
+      normal = {
+        "<Shift-ctrl-f>" = "spawn --userscript qute-1pass-fill";
+        "<Shift-ctrl-g>" = "spawn --userscript qute-1pass-generate";
+      };
+    };
   };
+
 }

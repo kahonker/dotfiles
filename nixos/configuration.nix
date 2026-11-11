@@ -20,6 +20,7 @@
     ./environment.nix
     #    ./nvidia_conf.nix
     ./nvidia.nix
+    ./1password.nix
   ];
 
   nix.settings.experimental-features = [

@@ -1,0 +1,205 @@
+#!/usr/bin/env bash
+
+# COMPLETELY VIBE CODED
+
+# qutebrowser + 1Password CLI 2.x
+#
+# Requirements:
+#   - 1Password CLI 2.x
+#   - 1Password desktop app integration enabled
+#   - jq
+#   - rofi
+#   - wl-copy
+#
+# Authentication is handled by the 1Password CLI.
+# No session tokens are stored by this script.
+
+set +e
+
+# Escape a value as a JavaScript string literal.
+javascript_string() {
+    jq -Rn --arg value "$1" '$value'
+}
+
+# Send a message to qutebrowser.
+qute_message() {
+    printf "%s\n" "$1" >> "$QUTE_FIFO"
+}
+
+# Generate the JavaScript used to fill the login form.
+js() {
+    local username_js password_js url_js
+
+    username_js=$(javascript_string "$USERNAME")
+    password_js=$(javascript_string "$PASSWORD")
+    url_js=$(javascript_string "$QUTE_URL")
+
+    cat <<EOF
+(function() {
+    function isVisible(elem) {
+        var style = elem.ownerDocument.defaultView.getComputedStyle(elem);
+
+        if (style.visibility !== "visible" ||
+            style.display === "none" ||
+            style.opacity === "0") {
+            return false;
+        }
+
+        return elem.offsetWidth > 0 && elem.offsetHeight > 0;
+    }
+
+    function hasPasswordField(form) {
+        return Array.from(form.querySelectorAll("input"))
+            .some(function(input) {
+                return input.type === "password";
+            });
+    }
+
+    function setInputValue(input, value) {
+        var setter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype, "value"
+        ).set;
+
+        input.focus();
+        setter.call(input, value);
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        input.blur();
+    }
+
+    function loadData2Form(form) {
+        var inputs = form.querySelectorAll("input");
+
+        inputs.forEach(function(input) {
+            if (isVisible(input) &&
+                (input.type === "text" || input.type === "email")) {
+                setInputValue(input, ${username_js});
+            }
+
+            if (input.type === "password") {
+                setInputValue(input, ${password_js});
+            }
+        });
+    }
+
+    if (window.location.href !== ${url_js}) {
+        alert("Secrets will not be inserted.\\n" +
+              "The current page URL differs from the URL " +
+              "where the userscript was started.");
+        return;
+    }
+
+    document.querySelectorAll("form").forEach(function(form) {
+        if (hasPasswordField(form)) {
+            loadData2Form(form);
+        }
+    });
+})();
+EOF
+}
+
+# Get the hostname of the current page.
+URL=$(printf '%s\n' "$QUTE_URL" |
+    sed -E 's|^[a-zA-Z][a-zA-Z0-9+.-]*://||; s|/.*||; s/:.*//; s/^www\.//I' |
+    tr '[:upper:]' '[:lower:]')
+
+qute_message "message-info 'Looking for password for $URL...'"
+
+# Check that the 1Password CLI is available.
+if ! command -v op >/dev/null 2>&1; then
+    qute_message "message-error '1Password CLI not found'"
+    exit 1
+fi
+
+# Authenticate through the 1Password CLI.
+# This uses desktop app integration or an existing CLI authentication.
+if ! op vault list >/dev/null 2>&1; then
+    qute_message "message-error 'Cannot authenticate with 1Password. Unlock the app and enable CLI integration.'"
+    exit 1
+fi
+
+# Fetch Login items in JSON format.
+ITEMS=$(op item list --categories Login --long --format json 2>/dev/null)
+
+if [ -z "$ITEMS" ]; then
+    qute_message "message-error 'Could not retrieve 1Password items'"
+    exit 1
+fi
+
+# Find an item whose website URL contains the current hostname.
+UUID=$(printf '%s' "$ITEMS" | jq -r --arg host "$URL" '
+    [
+        .[]
+        | select(
+            (
+                [
+                    .urls[]?.url,
+                    .urls[]?.href,
+                    .urls[]?
+                ]
+                | map(tostring)
+                | join(" ")
+                | ascii_downcase
+            )
+            | contains($host)
+        )
+        | .id
+    ][0] // ""
+')
+
+# If no URL matches, allow manual selection through Rofi.
+if [ -z "$UUID" ] || [ "$UUID" = "null" ]; then
+    qute_message "message-error 'No automatic entry found; select one manually'"
+
+	SELECTION=$(printf '%s' "$ITEMS" |
+	    jq -r '.[] | select(.id != null) | [.id, .title] | @tsv' |
+	    fuzzel --dmenu --prompt "1Password: " 2>/dev/null)
+	    UUID=$(printf '%s\n' "$SELECTION" | cut -f1)
+
+    if [ -z "$UUID" ]; then
+        qute_message "message-error 'No entry selected'"
+        exit 1
+    fi
+fi
+
+# Retrieve the selected item.
+ITEM=$(op item get "$UUID" --format json --reveal 2>/dev/null)
+
+if [ -z "$ITEM" ]; then
+    qute_message "message-error 'Could not retrieve selected item'"
+    exit 1
+fi
+
+# Extract credentials using the CLI 2.x JSON structure.
+PASSWORD=$(printf '%s' "$ITEM" |
+    jq -r '[.fields[]? | select(.purpose == "PASSWORD") | .value][0] // empty')
+
+USERNAME=$(printf '%s' "$ITEM" |
+    jq -r '[.fields[]? | select(.purpose == "USERNAME") | .value][0] // empty')
+
+TITLE=$(printf '%s' "$ITEM" | jq -r '.title // "Unknown item"')
+
+if [ -z "$PASSWORD" ]; then
+    qute_message "message-error 'No password found in selected item'"
+    exit 1
+fi
+
+# Generate the JavaScript and send it to qutebrowser.
+JS=$(js | tr '\n' ' ')
+
+if [ -z "$JS" ]; then
+    qute_message "message-error 'Could not generate JavaScript'"
+    exit 1
+fi
+
+printf 'jseval -q %s\n' "$JS" >> "$QUTE_FIFO"
+
+# Retrieve and copy the TOTP, if available.
+TOTP=$(op item get "$UUID" --otp 2>/dev/null)
+
+if [ -n "$TOTP" ]; then
+    printf '%s' "$TOTP" | wl-copy
+    qute_message "message-info 'Filled $TITLE; one-time password copied to clipboard'"
+else
+    qute_message "message-info 'Filled credentials for $TITLE'"
+fi

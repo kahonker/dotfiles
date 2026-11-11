@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+# Create a new 1Password Login with a generated password.
+#
+# Requirements:
+#   - 1Password CLI 2.x
+#   - 1Password desktop app integration
+#   - fuzzel
+#   - wl-clipboard
+#
+# Fastmail Masked Email:
+#   Generate the alias using the 1Password browser extension,
+#   then paste it into the email prompt.
+
+set -euo pipefail
+
+notify() {
+    printf "message-info '%s'\n" "$1" >> "$QUTE_FIFO"
+}
+
+error() {
+    printf "message-error '%s'\n" "$1" >> "$QUTE_FIFO"
+    exit 1
+}
+
+# Fuzzel input helper.
+ask() {
+    local prompt="$1"
+    local default="${2:-}"
+
+    printf '%s\n' "$default" |
+        fuzzel --dmenu --prompt "$prompt" 2>/dev/null
+}
+
+# Check dependencies.
+for cmd in op fuzzel wl-copy jq; do
+    command -v "$cmd" >/dev/null 2>&1 ||
+        error "Missing dependency: $cmd"
+done
+
+# Check authentication.
+if ! op vault list >/dev/null 2>&1; then
+    error "Cannot authenticate with 1Password. Unlock the app."
+fi
+
+# Get current website.
+CURRENT_URL="${QUTE_URL:-}"
+
+if [ -z "$CURRENT_URL" ]; then
+    error "No website URL available"
+fi
+
+# Derive default title.
+DOMAIN=$(printf '%s\n' "$CURRENT_URL" |
+    sed -E 's|^[a-zA-Z][a-zA-Z0-9+.-]*://||; s|/.*||; s/:.*//; s/^www\.//I')
+
+# Ask for item details.
+TITLE=$(ask "Title: " "$DOMAIN") || exit 0
+[ -n "$TITLE" ] || exit 0
+
+EMAIL=$(ask "Email (Fastmail alias): ") || exit 0
+[ -n "$EMAIL" ] || exit 0
+
+URL=$(ask "Website URL: " "$CURRENT_URL") || exit 0
+[ -n "$URL" ] || exit 0
+
+if [[ ! "$URL" =~ ^https?:// ]]; then
+    error "Website URL must start with http:// or https://"
+fi
+
+# Confirm creation.
+CONFIRM=$(printf 'Create login for %s (%s)' "$TITLE" "$EMAIL" |
+    fuzzel --dmenu --prompt "Confirm: " 2>/dev/null) || exit 0
+
+[ "$CONFIRM" = "Create login for $TITLE ($EMAIL)" ] || exit 0
+
+ITEM_JSON=$(jq -n \
+    --arg title "$TITLE" \
+    --arg url "$URL" \
+    --arg username "$EMAIL" \
+    '{
+        title: $title,
+        category: "LOGIN",
+        urls: [
+            {
+                label: "website",
+                primary: true,
+                href: $url
+            }
+        ],
+        fields: [
+            {
+                id: "username",
+                type: "STRING",
+                purpose: "USERNAME",
+                label: "username",
+                value: $username
+            }
+        ]
+    }')
+
+CREATE_OUTPUT=$(printf '%s' "$ITEM_JSON" |
+    op item create \
+        --format json \
+        --generate-password='letters,digits,symbols,32' \
+        - 2>&1) || {
+            printf '%s\n' "$CREATE_OUTPUT" >&2
+            error "1Password creation failed"
+        }
+
+notify "Created 1Password login for $TITLE"

@@ -8,5 +8,7 @@
     ./gpg.nix
     ./zsh.nix
     ./starship.nix
+    ./packages.nix
+    ./qutebrowser-scripts.nix
   ];
 }
