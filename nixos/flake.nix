@@ -5,6 +5,8 @@
 
     home-manager.url = "github:nix-community/home-manager";
 
+    yapfast.url = "github:yapfast/yapfast";
+
     niri = {
       url = "github:epireyn/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,6 +41,7 @@
       glide,
       nixvim,
       home-manager,
+      yapfast,
       ...
     }@inputs:
     let
@@ -105,6 +108,11 @@
               home-manager.extraSpecialArgs = { inherit inputs kotlin-lsp; };
               home-manager.users.kahonkey = ./home.nix;
             }
+            ({ pkgs, ... }: {
+              environment.systemPackages = [
+                yapfast.packages.${pkgs.system}.yapfast
+              ];
+            })
           ];
         };
       };
