@@ -10,6 +10,7 @@
 
       core = {
         editor = "nvim";
+        pager = "less -FRX";
       };
 
       init = {
