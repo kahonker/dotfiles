@@ -84,14 +84,13 @@
         AutofillCreditCardEnabled = false;
         # ...
         ExtensionSettings = {
-          "*".installation_mode = "blocked"; # blocks all addons except the ones specified below
           # uBlock Origin:
           "uBlock0@raymondhill.net" = {
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
             installation_mode = "force_installed";
           };
-          "addon@darkreader.org" = {
-            install_url = "https://addons.mozilla.org/firefox/downloads/latest/darkreader/latest.xpi";
+          "d634138d-c276-4fc8-924b-40a0ea21d284" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/file/5203941/1password_x_password_manager-8.12.44.33.xpi";
             installation_mode = "force_installed";
           };
         };

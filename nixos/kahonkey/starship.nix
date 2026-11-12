@@ -2,7 +2,7 @@
   programs.starship = {
     enable = true;
     settings = {
-      format = "$os$hostname[](fg:bright-red bg:green)$directory[](fg:green bg:bright-yellow)$git_branch";
+      format = "$os$hostname[](fg:bright-red bg:green)$directory[](fg:green bg:bright-yellow)$git_branch$fill$git_commit";
 
       os = {
         format = "[$symbol]($style)";
@@ -24,10 +24,21 @@
         truncation_symbol = "";
       };
 
+      fill = {
+        symbol = " ";
+      };
+
       git_branch = {
-        format = " [$symbol$branch]($style)";
+        format = "[ $symbol$branch]($style)";
         style = "bg:bright-yellow fg:bright-white";
         truncation_symbol = "";
+      };
+
+      git_commit = {
+        format = "[$hash$tag]($style)";
+        style = "bg:bright-yellow fg:bright-white";
+        tag_disabled = false;
+        tag_symbol = "  ";
       };
     };
   };

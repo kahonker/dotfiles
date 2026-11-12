@@ -38,6 +38,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/efi";
   boot.kernel.sysctl."kernel.sysrq" = 1;
+  programs.seahorse.enable = true;
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_zen;
@@ -73,6 +74,7 @@
     evdev:name:Dell WMI hotkeys:* 
      KEYBOARD_KEY_100109=reserved
   '';
+  services.gnome.gnome-keyring.enable = true;
   # services.displayManager.defaultSession = "niri-session";
 
   # Configure keymap in X11
@@ -87,6 +89,7 @@
   # OR
 
   security.rtkit.enable = true;
+  security.pam.services.login.enableGnomeKeyring = true;
 
   services.pipewire = {
     enable = true;

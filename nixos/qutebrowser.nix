@@ -35,10 +35,10 @@
         workarounds.disable_accessibility = "always";
       };
 
-      tabs = {
-        show = "never";
-        tabs_are_windows = true;
-      };
+      # tabs = {
+      #   show = "never";
+      #   tabs_are_windows = true;
+      # };
 
       window.hide_decoration = true;
     };
