@@ -84,12 +84,12 @@ Item {
         height: width
         radius: height / 2
 
-        color: "transparent"//activeRectangle && activeRectangle.isFocused ? Colors.color8 : Colors.color11
+        color: activeRectangle && activeRectangle.isFocused ? Colors.color8 : Colors.color11
 
-        LiquidGradient {
-            // zoom: 2
-            cornerRadius: height / 2
-        }
+        // LiquidGradient {
+        //     // zoom: 2
+        //     cornerRadius: height / 2
+        // }
 
         Behavior on x {
             NumberAnimation {

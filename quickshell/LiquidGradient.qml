@@ -20,7 +20,7 @@ ShaderEffect {
     NumberAnimation on time {
         from: 0
         to: 1
-        duration: 16000
+        duration: 86000
         loops: Animation.Infinite
         running: true
     }

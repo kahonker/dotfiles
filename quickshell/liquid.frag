@@ -69,8 +69,8 @@ void main() {
     vec2 uv = (qt_TexCoord0 - 0.5) * ubuf.resolution / shortSide;
     uv = uv / ubuf.zoom + 0.5;
     float phase = ubuf.time * 6.28318530718;
-    vec2 flowA = vec2(cos(phase), sin(phase)) * 0.32;
-    vec2 flowB = vec2(cos(phase * 2.0), sin(phase * 2.0)) * 0.16;
+    vec2 flowA = vec2(cos(phase), sin(phase)) * 2.6;
+    vec2 flowB = vec2(cos(phase * 2.0), sin(phase * 2.0)) * 1.3;
     float n = liquidField(uv, flowA, flowB);
 
     vec3 result = mix(

@@ -15,12 +15,12 @@ Scope {
             // color: "transparent"
             color: Qt.rgba(Colors.color1.r, Colors.color1.g, Colors.color1.b, 0.4) // Semi-transparent background color
 
+            // LiquidGradient {
+            //     zoom: 5
+            // }
+
             BackgroundEffect.blurRegion: Region {
                 item: root.contentItem
-            }
-
-            LiquidGradient {
-                zoom: 5
             }
 
             anchors {
