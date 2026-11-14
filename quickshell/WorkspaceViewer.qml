@@ -46,6 +46,7 @@ Item {
                     required property int index
                     required property bool isActive
                     required property bool isFocused
+                    required property string name
 
                     MouseArea {
                         id: mouseArea
@@ -77,13 +78,18 @@ Item {
     Rectangle {
         id: workspaceIndicator
         property Rectangle activeRectangle: null
-        x: activeRectangle ? workspacesRow.x + activeRectangle.x - 1 : 0
-        y: activeRectangle ? workspacesRow.y + activeRectangle.y - 1 : 0
+        x: activeRectangle ? workspacesWrapper.x + workspacesRow.x + activeRectangle.x - 1 : 0
+        y: activeRectangle ? workspacesWrapper.y + workspacesRow.y + activeRectangle.y - 1 : 0
         width: root.dotSize + 2
         height: width
         radius: height / 2
 
-        color: activeRectangle && activeRectangle.isFocused ? Colors.color8 : Colors.color11
+        color: "transparent"//activeRectangle && activeRectangle.isFocused ? Colors.color8 : Colors.color11
+
+        LiquidGradient {
+            // zoom: 2
+            cornerRadius: height / 2
+        }
 
         Behavior on x {
             NumberAnimation {

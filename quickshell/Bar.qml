@@ -18,6 +18,9 @@ Scope {
             BackgroundEffect.blurRegion: Region {
                 item: root.contentItem
             }
+
+            LiquidGradient {}
+
             anchors {
                 top: true
                 left: true
@@ -63,7 +66,6 @@ Scope {
                         fontSizeMode: Text.VerticalFit
                         font.family: "FiraCode Nerd Font Propo"
                         minimumPixelSize: {
-                            print("󰕾󰕿󰖀󰸈" + Icons.nf_md_battery_0);
                             return 10;
                         }
                         color: Colors.color5
