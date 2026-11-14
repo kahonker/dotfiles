@@ -34,25 +34,29 @@ float noise(vec2 p) {
 
 float fbm(vec2 p) {
     float value = 0.0;
-    float amplitude = 0.5;
+    float amplitude = 0.55;
 
-    for (int i = 0; i < 5; i++) {
+    // Keep the field low-frequency so it forms broad, liquid-like regions
+    // instead of the small turbulent pockets produced by high-octave noise.
+    for (int i = 0; i < 3; i++) {
         value += amplitude * noise(p);
-        p = p * 2.0 + vec2(17.3, 11.7);
-        amplitude *= 0.5;
+        p = p * 1.9 + vec2(17.3, 11.7);
+        amplitude *= 0.45;
     }
 
-    return value;
+    return value / 0.7975;
 }
 
 float liquidField(vec2 uv, vec2 flowA, vec2 flowB) {
-    vec2 warpedUv = uv * 2.2 + flowA;
+    vec2 warpedUv = uv * 1.35 + flowA;
     vec2 warp = vec2(
         fbm(warpedUv + flowB),
-        fbm(warpedUv - flowB + vec2(7.1, 2.6))
+        fbm(warpedUv + vec2(7.1, 2.6) - flowB)
     );
 
-    return fbm(warpedUv + (warp - 0.5) * 1.8);
+    // A restrained domain warp bends the boundaries without breaking them
+    // into the wispy, gaseous shapes of the previous field.
+    return fbm(warpedUv + (warp - 0.5) * 1.15);
 }
 
 float roundedBox(vec2 p, vec2 halfSize, float radius) {
@@ -61,31 +65,28 @@ float roundedBox(vec2 p, vec2 halfSize, float radius) {
 }
 
 void main() {
-    const float tau = 6.28318530718;
     float shortSide = min(ubuf.resolution.x, ubuf.resolution.y);
     vec2 uv = (qt_TexCoord0 - 0.5) * ubuf.resolution / shortSide;
     uv = uv / ubuf.zoom + 0.5;
-    float phase = ubuf.time * tau;
-
-    // Integer frequencies make every moving field return to its start at the loop boundary.
-    vec2 flowA = vec2(cos(phase), sin(phase)) * 0.35;
-    vec2 flowB = vec2(cos(phase * 2.0), sin(phase * 2.0)) * 0.18;
+    float phase = ubuf.time * 6.28318530718;
+    vec2 flowA = vec2(cos(phase), sin(phase)) * 0.32;
+    vec2 flowB = vec2(cos(phase * 2.0), sin(phase * 2.0)) * 0.16;
     float n = liquidField(uv, flowA, flowB);
 
     vec3 result = mix(
         ubuf.colorA.rgb,
         ubuf.colorB.rgb,
-        smoothstep(0.12, 0.38, n)
+        smoothstep(0.18, 0.42, n)
     );
     result = mix(
         result,
         ubuf.colorC.rgb,
-        smoothstep(0.34, 0.62, n)
+        smoothstep(0.38, 0.64, n)
     );
     result = mix(
         result,
         ubuf.colorD.rgb,
-        smoothstep(0.58, 0.86, n)
+        smoothstep(0.60, 0.84, n)
     );
 
     vec2 pixel = qt_TexCoord0 * ubuf.resolution;
