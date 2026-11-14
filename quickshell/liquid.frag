@@ -67,35 +67,25 @@ void main() {
     uv = uv / ubuf.zoom + 0.5;
     float phase = ubuf.time * tau;
 
-    // Circular phase offsets keep the motion continuous when the animation loops.
+    // Integer frequencies make every moving field return to its start at the loop boundary.
     vec2 flowA = vec2(cos(phase), sin(phase)) * 0.35;
     vec2 flowB = vec2(cos(phase * 2.0), sin(phase * 2.0)) * 0.18;
-    vec2 blurOffset = vec2(0.1);
-    vec2 diagonalOffset = blurOffset * 0.7071;
-    float n = liquidField(uv, flowA, flowB) * 0.2;
-    n += liquidField(uv + vec2(blurOffset.x, 0.0), flowA, flowB) * 0.1;
-    n += liquidField(uv - vec2(blurOffset.x, 0.0), flowA, flowB) * 0.1;
-    n += liquidField(uv + vec2(0.0, blurOffset.y), flowA, flowB) * 0.1;
-    n += liquidField(uv - vec2(0.0, blurOffset.y), flowA, flowB) * 0.1;
-    n += liquidField(uv + diagonalOffset, flowA, flowB) * 0.1;
-    n += liquidField(uv - diagonalOffset, flowA, flowB) * 0.1;
-    n += liquidField(uv + vec2(diagonalOffset.x, -diagonalOffset.y), flowA, flowB) * 0.1;
-    n += liquidField(uv + vec2(-diagonalOffset.x, diagonalOffset.y), flowA, flowB) * 0.1;
+    float n = liquidField(uv, flowA, flowB);
 
     vec3 result = mix(
         ubuf.colorA.rgb,
         ubuf.colorB.rgb,
-        smoothstep(0.14, 0.38, n)
+        smoothstep(0.12, 0.38, n)
     );
     result = mix(
         result,
         ubuf.colorC.rgb,
-        smoothstep(0.38, 0.64, n)
+        smoothstep(0.34, 0.62, n)
     );
     result = mix(
         result,
         ubuf.colorD.rgb,
-        smoothstep(0.6, 0.86, n)
+        smoothstep(0.58, 0.86, n)
     );
 
     vec2 pixel = qt_TexCoord0 * ubuf.resolution;

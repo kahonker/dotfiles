@@ -20,7 +20,7 @@ Scope {
             }
 
             LiquidGradient {
-                zoom: 3
+                zoom: 7
             }
 
             anchors {
