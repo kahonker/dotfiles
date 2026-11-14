@@ -19,7 +19,9 @@ Scope {
                 item: root.contentItem
             }
 
-            LiquidGradient {}
+            LiquidGradient {
+                zoom: 3
+            }
 
             anchors {
                 top: true

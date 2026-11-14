@@ -45,6 +45,16 @@ float fbm(vec2 p) {
     return value;
 }
 
+float liquidField(vec2 uv, vec2 flowA, vec2 flowB) {
+    vec2 warpedUv = uv * 2.2 + flowA;
+    vec2 warp = vec2(
+        fbm(warpedUv + flowB),
+        fbm(warpedUv - flowB + vec2(7.1, 2.6))
+    );
+
+    return fbm(warpedUv + (warp - 0.5) * 1.8);
+}
+
 float roundedBox(vec2 p, vec2 halfSize, float radius) {
     vec2 q = abs(p) - halfSize + radius;
     return length(max(q, vec2(0.0))) + min(max(q.x, q.y), 0.0) - radius;
@@ -60,17 +70,22 @@ void main() {
     // Circular phase offsets keep the motion continuous when the animation loops.
     vec2 flowA = vec2(cos(phase), sin(phase)) * 0.35;
     vec2 flowB = vec2(cos(phase * 2.0), sin(phase * 2.0)) * 0.18;
-    vec2 warpedUv = uv * 2.2 + flowA;
-    vec2 warp = vec2(
-        fbm(warpedUv + flowB),
-        fbm(warpedUv - flowB + vec2(7.1, 2.6))
-    );
-    float n = fbm(warpedUv + (warp - 0.5) * 1.8);
+    vec2 blurOffset = vec2(0.1);
+    vec2 diagonalOffset = blurOffset * 0.7071;
+    float n = liquidField(uv, flowA, flowB) * 0.2;
+    n += liquidField(uv + vec2(blurOffset.x, 0.0), flowA, flowB) * 0.1;
+    n += liquidField(uv - vec2(blurOffset.x, 0.0), flowA, flowB) * 0.1;
+    n += liquidField(uv + vec2(0.0, blurOffset.y), flowA, flowB) * 0.1;
+    n += liquidField(uv - vec2(0.0, blurOffset.y), flowA, flowB) * 0.1;
+    n += liquidField(uv + diagonalOffset, flowA, flowB) * 0.1;
+    n += liquidField(uv - diagonalOffset, flowA, flowB) * 0.1;
+    n += liquidField(uv + vec2(diagonalOffset.x, -diagonalOffset.y), flowA, flowB) * 0.1;
+    n += liquidField(uv + vec2(-diagonalOffset.x, diagonalOffset.y), flowA, flowB) * 0.1;
 
     vec3 result = mix(
         ubuf.colorA.rgb,
         ubuf.colorB.rgb,
-        smoothstep(0.18, 0.42, n)
+        smoothstep(0.14, 0.38, n)
     );
     result = mix(
         result,
